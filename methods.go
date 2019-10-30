@@ -30,7 +30,7 @@ type peerJoinBody struct {
 }
 
 // ID returns information about the cluster Peer.
-func (c *defaultClient) ID(ctx context.Context) (*ID, error) {
+func (c *defaultCluster) ID(ctx context.Context) (*ID, error) {
 	ctx, span := trace.StartSpan(ctx, "client/ID")
 	defer span.End()
 
@@ -40,7 +40,7 @@ func (c *defaultClient) ID(ctx context.Context) (*ID, error) {
 }
 
 // Peers requests ID information for all cluster peers.
-func (c *defaultClient) Peers(ctx context.Context) ([]*ID, error) {
+func (c *defaultCluster) Peers(ctx context.Context) ([]*ID, error) {
 	ctx, span := trace.StartSpan(ctx, "client/Peers")
 	defer span.End()
 
@@ -49,7 +49,7 @@ func (c *defaultClient) Peers(ctx context.Context) ([]*ID, error) {
 	return ids, err
 }
 
-func (c *defaultClient) PeerJoin(ctx context.Context, addr string) (*ID, error) {
+func (c *defaultCluster) PeerJoin(ctx context.Context, addr string) (*ID, error) {
 	ctx, span := trace.StartSpan(ctx, "client/PeerJoin")
 	defer span.End()
 
@@ -66,7 +66,7 @@ func (c *defaultClient) PeerJoin(ctx context.Context, addr string) (*ID, error) 
 }
 
 // PeerAdd adds a new peer to the cluster.
-func (c *defaultClient) PeerAdd(ctx context.Context, pid peer.ID) (*ID, error) {
+func (c *defaultCluster) PeerAdd(ctx context.Context, pid peer.ID) (*ID, error) {
 	ctx, span := trace.StartSpan(ctx, "client/PeerAdd")
 	defer span.End()
 
@@ -84,7 +84,7 @@ func (c *defaultClient) PeerAdd(ctx context.Context, pid peer.ID) (*ID, error) {
 }
 
 // PeerRm removes a current peer from the cluster
-func (c *defaultClient) PeerRm(ctx context.Context, id peer.ID) error {
+func (c *defaultCluster) PeerRm(ctx context.Context, id peer.ID) error {
 	ctx, span := trace.StartSpan(ctx, "client/PeerRm")
 	defer span.End()
 
@@ -93,7 +93,7 @@ func (c *defaultClient) PeerRm(ctx context.Context, id peer.ID) error {
 
 // Pin tracks a Cid with the given replication factor and a name for
 // human-friendliness.
-func (c *defaultClient) Pin(ctx context.Context, ci cid.Cid, opts PinOptions) (*Pin, error) {
+func (c *defaultCluster) Pin(ctx context.Context, ci cid.Cid, opts PinOptions) (*Pin, error) {
 	ctx, span := trace.StartSpan(ctx, "client/Pin")
 	defer span.End()
 
@@ -117,7 +117,7 @@ func (c *defaultClient) Pin(ctx context.Context, ci cid.Cid, opts PinOptions) (*
 }
 
 // Unpin untracks a Cid from cluster.
-func (c *defaultClient) Unpin(ctx context.Context, ci cid.Cid) (*Pin, error) {
+func (c *defaultCluster) Unpin(ctx context.Context, ci cid.Cid) (*Pin, error) {
 	ctx, span := trace.StartSpan(ctx, "client/Unpin")
 	defer span.End()
 	var pin Pin
@@ -129,7 +129,7 @@ func (c *defaultClient) Unpin(ctx context.Context, ci cid.Cid) (*Pin, error) {
 }
 
 // PinPath allows to pin an element by the given IPFS path.
-func (c *defaultClient) PinPath(ctx context.Context, path string, opts PinOptions) (*Pin, error) {
+func (c *defaultCluster) PinPath(ctx context.Context, path string, opts PinOptions) (*Pin, error) {
 	ctx, span := trace.StartSpan(ctx, "client/PinPath")
 	defer span.End()
 
@@ -157,7 +157,7 @@ func (c *defaultClient) PinPath(ctx context.Context, path string, opts PinOption
 
 // UnpinPath allows to unpin an item by providing its IPFS path.
 // It returns the unpinned Pin information of the resolved Cid.
-func (c *defaultClient) UnpinPath(ctx context.Context, p string) (*Pin, error) {
+func (c *defaultCluster) UnpinPath(ctx context.Context, p string) (*Pin, error) {
 	ctx, span := trace.StartSpan(ctx, "client/UnpinPath")
 	defer span.End()
 
@@ -173,7 +173,7 @@ func (c *defaultClient) UnpinPath(ctx context.Context, p string) (*Pin, error) {
 
 // Allocations returns the consensus state listing all tracked items and
 // the peers that should be pinning them.
-func (c *defaultClient) Allocations(ctx context.Context, filter PinType) ([]*Pin, error) {
+func (c *defaultCluster) Allocations(ctx context.Context, filter PinType) ([]*Pin, error) {
 	ctx, span := trace.StartSpan(ctx, "client/Allocations")
 	defer span.End()
 
@@ -204,7 +204,7 @@ func (c *defaultClient) Allocations(ctx context.Context, filter PinType) ([]*Pin
 }
 
 // Allocation returns the current allocations for a given Cid.
-func (c *defaultClient) Allocation(ctx context.Context, ci cid.Cid) (*Pin, error) {
+func (c *defaultCluster) Allocation(ctx context.Context, ci cid.Cid) (*Pin, error) {
 	ctx, span := trace.StartSpan(ctx, "client/Allocation")
 	defer span.End()
 
@@ -216,7 +216,7 @@ func (c *defaultClient) Allocation(ctx context.Context, ci cid.Cid) (*Pin, error
 // Status returns the current ipfs state for a given Cid. If local is true,
 // the information affects only the current peer, otherwise the information
 // is fetched from all cluster peers.
-func (c *defaultClient) Status(ctx context.Context, ci cid.Cid, local bool) (*GlobalPinInfo, error) {
+func (c *defaultCluster) Status(ctx context.Context, ci cid.Cid, local bool) (*GlobalPinInfo, error) {
 	ctx, span := trace.StartSpan(ctx, "client/Status")
 	defer span.End()
 
@@ -237,7 +237,7 @@ func (c *defaultClient) Status(ctx context.Context, ci cid.Cid, local bool) (*Gl
 // will be returned. A filter can be built by merging TrackerStatuses with
 // a bitwise OR operation (st1 | st2 | ...). A "0" filter value (or
 // TrackerStatusUndefined), means all.
-func (c *defaultClient) StatusAll(ctx context.Context, filter TrackerStatus, local bool) ([]*GlobalPinInfo, error) {
+func (c *defaultCluster) StatusAll(ctx context.Context, filter TrackerStatus, local bool) ([]*GlobalPinInfo, error) {
 	ctx, span := trace.StartSpan(ctx, "client/StatusAll")
 	defer span.End()
 
@@ -265,7 +265,7 @@ func (c *defaultClient) StatusAll(ctx context.Context, filter TrackerStatus, loc
 // Sync makes sure the state of a Cid corresponds to the state reported by
 // the ipfs daemon, and returns it. If local is true, this operation only
 // happens on the current peer, otherwise it happens on every cluster peer.
-func (c *defaultClient) Sync(ctx context.Context, ci cid.Cid, local bool) (*GlobalPinInfo, error) {
+func (c *defaultCluster) Sync(ctx context.Context, ci cid.Cid, local bool) (*GlobalPinInfo, error) {
 	ctx, span := trace.StartSpan(ctx, "client/Sync")
 	defer span.End()
 
@@ -285,7 +285,7 @@ func (c *defaultClient) Sync(ctx context.Context, ci cid.Cid, local bool) (*Glob
 // informations for items that were de-synced or have an error state. If
 // local is true, the operation is limited to the current peer. Otherwise
 // it happens on every cluster peer.
-func (c *defaultClient) SyncAll(ctx context.Context, local bool) ([]*GlobalPinInfo, error) {
+func (c *defaultCluster) SyncAll(ctx context.Context, local bool) ([]*GlobalPinInfo, error) {
 	ctx, span := trace.StartSpan(ctx, "client/SyncAll")
 	defer span.End()
 
@@ -297,7 +297,7 @@ func (c *defaultClient) SyncAll(ctx context.Context, local bool) ([]*GlobalPinIn
 // Recover retriggers pin or unpin ipfs operations for a Cid in error state.
 // If local is true, the operation is limited to the current peer, otherwise
 // it happens on every cluster peer.
-func (c *defaultClient) Recover(ctx context.Context, ci cid.Cid, local bool) (*GlobalPinInfo, error) {
+func (c *defaultCluster) Recover(ctx context.Context, ci cid.Cid, local bool) (*GlobalPinInfo, error) {
 	ctx, span := trace.StartSpan(ctx, "client/Recover")
 	defer span.End()
 
@@ -309,7 +309,7 @@ func (c *defaultClient) Recover(ctx context.Context, ci cid.Cid, local bool) (*G
 // RecoverAll triggers Recover() operations on all tracked items. If local is
 // true, the operation is limited to the current peer. Otherwise, it happens
 // everywhere.
-func (c *defaultClient) RecoverAll(ctx context.Context, local bool) ([]*GlobalPinInfo, error) {
+func (c *defaultCluster) RecoverAll(ctx context.Context, local bool) ([]*GlobalPinInfo, error) {
 	ctx, span := trace.StartSpan(ctx, "client/RecoverAll")
 	defer span.End()
 
@@ -319,7 +319,7 @@ func (c *defaultClient) RecoverAll(ctx context.Context, local bool) ([]*GlobalPi
 }
 
 // Version returns the ipfs-cluster peer's version.
-func (c *defaultClient) Version(ctx context.Context) (*Version, error) {
+func (c *defaultCluster) Version(ctx context.Context) (*Version, error) {
 	ctx, span := trace.StartSpan(ctx, "client/Version")
 	defer span.End()
 
@@ -330,7 +330,7 @@ func (c *defaultClient) Version(ctx context.Context) (*Version, error) {
 
 // GetConnectGraph returns an ipfs-cluster connection graph.
 // The serialized version, strings instead of pids, is returned
-func (c *defaultClient) GetConnectGraph(ctx context.Context) (*ConnectGraph, error) {
+func (c *defaultCluster) GetConnectGraph(ctx context.Context) (*ConnectGraph, error) {
 	ctx, span := trace.StartSpan(ctx, "client/GetConnectGraph")
 	defer span.End()
 
@@ -341,7 +341,7 @@ func (c *defaultClient) GetConnectGraph(ctx context.Context) (*ConnectGraph, err
 
 // Metrics returns a map with the latest valid metrics of the given name
 // for the current cluster peers.
-func (c *defaultClient) Metrics(ctx context.Context, name string) ([]*Metric, error) {
+func (c *defaultCluster) Metrics(ctx context.Context, name string) ([]*Metric, error) {
 	ctx, span := trace.StartSpan(ctx, "client/Metrics")
 	defer span.End()
 
@@ -522,7 +522,7 @@ func makeSerialFile(fpath string, params *AddParams) (files.Node, error) {
 // sharding the resulting DAG across the IPFS daemons of multiple cluster
 // peers. The output channel will receive regular updates as the adding
 // process progresses.
-func (c *defaultClient) Add(
+func (c *defaultCluster) Add(
 	ctx context.Context,
 	paths []string,
 	params *AddParams,
@@ -565,7 +565,7 @@ func (c *defaultClient) Add(
 }
 
 // AddMultiFile imports new files from a MultiFileReader. See Add().
-func (c *defaultClient) AddMultiFile(
+func (c *defaultCluster) AddMultiFile(
 	ctx context.Context,
 	multiFileR *files.MultiFileReader,
 	params *AddParams,

@@ -72,7 +72,7 @@ func peerMAddr(a *rest.API) ma.Multiaddr {
 	return nil
 }
 
-func testClientHTTP(t *testing.T, api *rest.API) *defaultClient {
+func testClientHTTP(t *testing.T, api *rest.API) *defaultCluster {
 	cfg := &Config{
 		APIAddr:           apiMAddr(api),
 		DisableKeepAlives: true,
@@ -82,10 +82,10 @@ func testClientHTTP(t *testing.T, api *rest.API) *defaultClient {
 		t.Fatal(err)
 	}
 
-	return c.(*defaultClient)
+	return c.(*defaultCluster)
 }
 
-func testClientLibp2p(t *testing.T, api *rest.API) *defaultClient {
+func testClientLibp2p(t *testing.T, api *rest.API) *defaultCluster {
 	cfg := &Config{
 		APIAddr:           peerMAddr(api),
 		ProtectorKey:      make([]byte, 32),
@@ -95,7 +95,7 @@ func testClientLibp2p(t *testing.T, api *rest.API) *defaultClient {
 	if err != nil {
 		t.Fatal(err)
 	}
-	return c.(*defaultClient)
+	return c.(*defaultCluster)
 }
 
 func TestNewDefaultClient(t *testing.T) {
@@ -122,7 +122,7 @@ func TestDefaultAddress(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	dc := c.(*defaultClient)
+	dc := c.(*defaultCluster)
 	if dc.hostname != "127.0.0.1:9094" {
 		t.Error("default should be used")
 	}
@@ -144,7 +144,7 @@ func TestMultiaddressPrecedence(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	dc := c.(*defaultClient)
+	dc := c.(*defaultCluster)
 	if dc.hostname != "1.2.3.4:1234" {
 		t.Error("APIAddr should be used")
 	}
@@ -195,7 +195,7 @@ func TestHostPort(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		dc := c.(*defaultClient)
+		dc := c.(*defaultCluster)
 		if dc.hostname != tc.expectedHostname {
 			t.Error("Host Port should be used")
 		}
@@ -218,7 +218,7 @@ func TestDNSMultiaddress(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	dc := c.(*defaultClient)
+	dc := c.(*defaultCluster)
 	if dc.hostname != "localhost:1234" {
 		t.Error("address should not be resolved")
 	}
@@ -240,7 +240,7 @@ func TestPeerAddress(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	dc := c.(*defaultClient)
+	dc := c.(*defaultCluster)
 	if dc.hostname != "QmP7R7gWEnruNePxmCa9GBa4VmUNexLVnb1v47R8Gyo3LP" || dc.net != "libp2p" {
 		t.Error("bad resolved address")
 	}
@@ -260,7 +260,7 @@ func TestProxyAddress(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	dc := c.(*defaultClient)
+	dc := c.(*defaultCluster)
 	if dc.config.ProxyAddr.String() != addr.String() {
 		t.Error("proxy address was replaced")
 	}
@@ -287,7 +287,7 @@ func TestIPFS(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	dc := c.(*defaultClient)
+	dc := c.(*defaultCluster)
 	ipfs := dc.IPFS(ctx)
 	err = ipfs.Pin().Add(context.Background(), path.IpfsPath(test.Cid1))
 	if err != nil {

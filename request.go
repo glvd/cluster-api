@@ -13,7 +13,7 @@ import (
 
 type responseDecoder func(d *json.Decoder) error
 
-func (c *defaultClient) do(
+func (c *defaultCluster) do(
 	ctx context.Context,
 	method, path string,
 	headers map[string]string,
@@ -28,7 +28,7 @@ func (c *defaultClient) do(
 	return c.handleResponse(resp, obj)
 }
 
-func (c *defaultClient) doStream(
+func (c *defaultCluster) doStream(
 	ctx context.Context,
 	method, path string,
 	headers map[string]string,
@@ -43,7 +43,7 @@ func (c *defaultClient) doStream(
 	return c.handleStreamResponse(resp, outHandler)
 }
 
-func (c *defaultClient) doRequest(
+func (c *defaultCluster) doRequest(
 	ctx context.Context,
 	method, path string,
 	headers map[string]string,
@@ -86,7 +86,7 @@ func (c *defaultClient) doRequest(
 
 	return c.client.Do(r)
 }
-func (c *defaultClient) handleResponse(resp *http.Response, obj interface{}) error {
+func (c *defaultCluster) handleResponse(resp *http.Response, obj interface{}) error {
 	body, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 
@@ -124,7 +124,7 @@ func (c *defaultClient) handleResponse(resp *http.Response, obj interface{}) err
 	return nil
 }
 
-func (c *defaultClient) handleStreamResponse(resp *http.Response, handler responseDecoder) error {
+func (c *defaultCluster) handleStreamResponse(resp *http.Response, handler responseDecoder) error {
 	if resp.StatusCode > 399 && resp.StatusCode < 600 {
 		return c.handleResponse(resp, nil)
 	}

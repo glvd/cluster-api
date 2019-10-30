@@ -8,7 +8,7 @@ import (
 // DefaultCluster initializes a client given a Config.
 func DefaultCluster(cfg *Config) (Client, error) {
 	ctx := context.Background()
-	client := &defaultClient{
+	client := &defaultCluster{
 		ctx:    ctx,
 		config: cfg,
 	}

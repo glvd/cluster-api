@@ -166,9 +166,9 @@ type Config struct {
 
 // DefaultClient provides methods to interact with the ipfs-cluster API. Use
 // NewDefaultClient() to create one.
-type defaultClient struct {
+type defaultCluster struct {
 	ctx       context.Context
-	cancel    func()
+	cancel    context.CancelFunc
 	config    *Config
 	transport *http.Transport
 	net       string
@@ -181,7 +181,7 @@ type defaultClient struct {
 // NewDefaultClient initializes a client given a Config.
 func NewDefaultClient(cfg *Config) (Client, error) {
 	ctx := context.Background()
-	client := &defaultClient{
+	client := &defaultCluster{
 		ctx:    ctx,
 		config: cfg,
 	}
@@ -218,7 +218,7 @@ func NewDefaultClient(cfg *Config) (Client, error) {
 	return client, nil
 }
 
-func (c *defaultClient) setupAPIAddr() error {
+func (c *defaultCluster) setupAPIAddr() error {
 	if c.config.APIAddr != nil {
 		return nil // already setup by user
 	}
@@ -248,7 +248,7 @@ func (c *defaultClient) setupAPIAddr() error {
 	return err
 }
 
-func (c *defaultClient) resolveAPIAddr() error {
+func (c *defaultCluster) resolveAPIAddr() error {
 	// Only resolve libp2p addresses. For HTTP addresses, we let
 	// the default client handle any resolving. We extract the hostname
 	// in setupHostname()
@@ -270,7 +270,7 @@ func (c *defaultClient) resolveAPIAddr() error {
 	return nil
 }
 
-func (c *defaultClient) setupHTTPClient() error {
+func (c *defaultCluster) setupHTTPClient() error {
 	var err error
 
 	switch {
@@ -299,7 +299,7 @@ func (c *defaultClient) setupHTTPClient() error {
 	return nil
 }
 
-func (c *defaultClient) setupHostname() error {
+func (c *defaultCluster) setupHostname() error {
 	// Extract host:port form APIAddr or use Host:Port.
 	// For libp2p, hostname is set in enableLibp2p()
 	if IsPeerAddress(c.config.APIAddr) {
@@ -313,7 +313,7 @@ func (c *defaultClient) setupHostname() error {
 	return nil
 }
 
-func (c *defaultClient) setupProxy() error {
+func (c *defaultCluster) setupProxy() error {
 	if c.config.ProxyAddr != nil {
 		return nil
 	}
@@ -331,7 +331,7 @@ func (c *defaultClient) setupProxy() error {
 // configured ProxyAddr (or to the default Cluster's IPFS proxy port).
 // It re-uses this Client's HTTP client, thus will be constrained by
 // the same configurations affecting it (timeouts...).
-func (c *defaultClient) IPFS(ctx context.Context) *httpapi.HttpApi {
+func (c *defaultCluster) IPFS(ctx context.Context) *httpapi.HttpApi {
 	cli, err := httpapi.NewApiWithClient(c.addr, c.client)
 	if err != nil {
 		return nil

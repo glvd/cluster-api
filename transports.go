@@ -21,7 +21,7 @@ import (
 // with it since it's a global variable, and we don't know who else uses
 // it, so we create our own.
 // TODO: Allow more configuration options.
-func (c *defaultClient) defaultTransport() {
+func (c *defaultCluster) defaultTransport() {
 	c.transport = &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
 		DialContext: (&net.Dialer{
@@ -37,7 +37,7 @@ func (c *defaultClient) defaultTransport() {
 	c.net = "http"
 }
 
-func (c *defaultClient) enableLibp2p() error {
+func (c *defaultCluster) enableLibp2p() error {
 	c.defaultTransport()
 
 	pinfo, err := peer.AddrInfoFromP2pAddr(c.config.APIAddr)
@@ -83,7 +83,7 @@ func (c *defaultClient) enableLibp2p() error {
 	return nil
 }
 
-func (c *defaultClient) enableTLS() error {
+func (c *defaultCluster) enableTLS() error {
 	c.defaultTransport()
 	// based on https://github.com/denji/golang-tls
 	c.transport.TLSClientConfig = &tls.Config{
