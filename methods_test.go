@@ -6,8 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/glvd/cluster/api"
-	types "github.com/glvd/cluster/api"
 	"github.com/glvd/cluster/api/rest"
 	"github.com/glvd/cluster/test"
 
@@ -142,7 +140,7 @@ func TestPin(t *testing.T) {
 	defer shutdown(api)
 
 	testF := func(t *testing.T, c Client) {
-		opts := types.PinOptions{
+		opts := PinOptions{
 			ReplicationFactorMin: 6,
 			ReplicationFactorMax: 7,
 			Name:                 "hello there",
@@ -215,7 +213,7 @@ func TestPinPath(t *testing.T) {
 	api := testAPI(t)
 	defer shutdown(api)
 
-	opts := types.PinOptions{
+	opts := PinOptions{
 		ReplicationFactorMin: 6,
 		ReplicationFactorMax: 7,
 		Name:                 "hello there",
@@ -225,7 +223,7 @@ func TestPinPath(t *testing.T) {
 	testF := func(t *testing.T, c Client) {
 		for _, testCase := range pathTestCases {
 			ec, _ := cid.Decode(testCase.expectedCid)
-			resultantPin := types.PinWithOpts(ec, opts)
+			resultantPin := PinWithOpts(ec, opts)
 			p := testCase.path
 			pin, err := c.PinPath(ctx, p, opts)
 			if err != nil {
@@ -278,7 +276,7 @@ func TestAllocations(t *testing.T) {
 	defer shutdown(api)
 
 	testF := func(t *testing.T, c Client) {
-		pins, err := c.Allocations(ctx, types.DataType|types.MetaType)
+		pins, err := c.Allocations(ctx, DataType|MetaType)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -351,7 +349,7 @@ func TestStatusAll(t *testing.T) {
 		}
 
 		// With filter option
-		pins, err = c.StatusAll(ctx, types.TrackerStatusPinning, false)
+		pins, err = c.StatusAll(ctx, TrackerStatusPinning, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -359,7 +357,7 @@ func TestStatusAll(t *testing.T) {
 			t.Error("there should be one pin")
 		}
 
-		pins, err = c.StatusAll(ctx, types.TrackerStatusPinned|types.TrackerStatusError, false)
+		pins, err = c.StatusAll(ctx, TrackerStatusPinned|TrackerStatusError, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -591,7 +589,7 @@ func TestWaitFor(t *testing.T) {
 				}
 			}
 		}()
-		_, err := c.Pin(ctx, test.Cid1, types.PinOptions{ReplicationFactorMin: 0, ReplicationFactorMax: 0, Name: "test", ShardSize: 0})
+		_, err := c.Pin(ctx, test.Cid1, PinOptions{ReplicationFactorMin: 0, ReplicationFactorMax: 0, Name: "test", ShardSize: 0})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -604,7 +602,7 @@ func TestWaitFor(t *testing.T) {
 func TestAddMultiFile(t *testing.T) {
 	ctx := context.Background()
 	api := testAPI(t)
-	defer Shutdown(ctx)
+	defer api.Shutdown(ctx)
 
 	sth := test.NewShardingTestHelper()
 	defer sth.Clean(t)
@@ -613,8 +611,8 @@ func TestAddMultiFile(t *testing.T) {
 		mfr, closer := sth.GetTreeMultiReader(t)
 		defer closer.Close()
 
-		p := &types.AddParams{
-			PinOptions: types.PinOptions{
+		p := &AddParams{
+			PinOptions: PinOptions{
 				ReplicationFactorMin: -1,
 				ReplicationFactorMax: -1,
 				Name:                 "test something",
@@ -628,7 +626,7 @@ func TestAddMultiFile(t *testing.T) {
 			StreamChannels: true,
 		}
 
-		out := make(chan *types.AddedOutput, 1)
+		out := make(chan *AddedOutput, 1)
 		var wg sync.WaitGroup
 		wg.Add(1)
 		go func() {

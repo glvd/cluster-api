@@ -11,6 +11,7 @@ require (
 	github.com/ipfs/go-ipfs-http-client v0.0.5
 	github.com/ipfs/go-log v0.0.1
 	github.com/ipfs/go-path v0.0.7
+	github.com/ipfs/interface-go-ipfs-core v0.2.3
 	github.com/libp2p/go-libp2p v0.4.0
 	github.com/libp2p/go-libp2p-core v0.2.4
 	github.com/libp2p/go-libp2p-gorpc v0.1.0
