@@ -5,8 +5,8 @@ import (
 	"sync/atomic"
 
 	"github.com/ipfs/go-cid"
-	shell "github.com/ipfs/go-ipfs-api"
 	files "github.com/ipfs/go-ipfs-files"
+	httpapi "github.com/ipfs/go-ipfs-http-client"
 	"github.com/libp2p/go-libp2p-core/peer"
 )
 
@@ -419,8 +419,8 @@ func (lc *loadBalancingClient) AddMultiFile(
 // configured ProxyAddr (or to the default Cluster's IPFS proxy port).
 // It re-uses this Client's HTTP client, thus will be constrained by
 // the same configurations affecting it (timeouts...).
-func (lc *loadBalancingClient) IPFS(ctx context.Context) *shell.Shell {
-	var s *shell.Shell
+func (lc *loadBalancingClient) IPFS(ctx context.Context) *httpapi.HttpApi {
+	var s *httpapi.HttpApi
 	call := func(c Client) error {
 		s = c.IPFS(ctx)
 		return nil
